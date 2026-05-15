@@ -3,7 +3,7 @@ name: gen-folder-path-color-config
 description: "Use when: generate config for folder-path-color extension."
 ---
 
-# gen-folder-path-color
+# gen-folder-path-color-config
 
 Generate VS Code `folder-path-color` configuration for the current workspace.
 

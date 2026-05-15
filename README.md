@@ -5,8 +5,8 @@
 ## 内容
 
 - `AGENTS.md`：面向 AI 编码代理的通用行为准则，强调先理解再编码、简单优先、外科手术式修改和目标驱动执行。
-- `skills/gen-sln-folder-path-color-config/`：根据当前解决方案中的 `.sln` 项目生成 VS Code `folder-path-color` 扩展配置。
-- `skills/gen-src-folder-path-color-config/`：根据当前工作区 `src` 目录下的直属子目录生成 VS Code `folder-path-color` 扩展配置。
+- `skills/config-folder-path-color/`：生成当前工作区的 VS Code `folder-path-color` 配置。
+- `skills/config-android-repo-mirror/`：为 Android/Gradle 项目配置阿里云 Maven 镜像，替换 `google()` 和 `mavenCentral()` 仓库。
 
 ## 文件放置
 
@@ -29,13 +29,6 @@
 ```text
 ~/.config/opencode/AGENTS.md
 ```
-
-## 技能使用
-
-当用户需要生成或刷新 VS Code `folder-path-color` 配置时，代理可以按场景选择对应技能：
-
-- 当前工作区包含 `.sln` 解决方案时，使用 `gen-sln-folder-path-color-config`。
-- 当前工作区以 `src` 直属目录组织模块时，使用 `gen-src-folder-path-color-config`。
 
 ## 行为准则
 

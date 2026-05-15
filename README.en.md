@@ -5,8 +5,8 @@ This repository stores general behavioral guidelines and reusable skill definiti
 ## Contents
 
 - `AGENTS.md`: General behavioral guidelines for AI coding agents, focused on thinking before coding, simplicity, surgical changes, and goal-driven execution.
-- `skills/gen-sln-folder-path-color-config/`: Generates VS Code `folder-path-color` extension configuration from projects in the current `.sln` solution.
-- `skills/gen-src-folder-path-color-config/`: Generates VS Code `folder-path-color` extension configuration from direct child directories under `src` in the current workspace.
+- `skills/config-folder-path-color/`: Generates VS Code `folder-path-color` configuration for the current workspace.
+- `skills/config-android-repo-mirror/`: Configures Android/Gradle projects to use Aliyun Maven mirrors instead of `google()` and `mavenCentral()`.
 
 ## File Placement
 
@@ -29,13 +29,6 @@ For OpenCode, place `AGENTS.md` at:
 ```text
 ~/.config/opencode/AGENTS.md
 ```
-
-## Skill Usage
-
-When the user wants to generate or refresh VS Code `folder-path-color` configuration, the agent can choose the appropriate skill:
-
-- Use `gen-sln-folder-path-color-config` when the workspace contains a `.sln` solution.
-- Use `gen-src-folder-path-color-config` when modules are organized as direct child directories under `src`.
 
 ## Principles
 

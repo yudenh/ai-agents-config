@@ -25,7 +25,7 @@ The user wants to standardize a DOCX方案文档, 技术方案, 项目方案, or
    - East Asian/Chinese font: `宋体` (`SimSun`)
    - Default font size: `小四` (`12pt`)
 4. Set every paragraph to 0 lines before, 0 lines after, and 1.15 line spacing.
-5. Treat the document's first line/first paragraph as the title, set it bold, and center it. This rule is mandatory: use the actual first paragraph (`doc.paragraphs[0]`) and do not skip blank paragraphs when locating the title.
+5. Treat the document's first line/first paragraph as the title, set it bold, center it, and set its font size to `小三号` (`15pt`). This rule is mandatory: use the actual first paragraph (`doc.paragraphs[0]`) and do not skip blank paragraphs when locating the title.
 6. Bold Chinese numbered headings like `一、...`, `二、...`, `三、...`.
 7. Bold numeric hierarchy headings like `1.1`, `1.2`, `2.1`, `2.1.1`, `3.2.1`.
 8. For non-heading paragraphs, set first-line indent to 2 Chinese characters.
@@ -46,6 +46,7 @@ The user wants to standardize a DOCX方案文档, 技术方案, 项目方案, or
 - Do not skip blank paragraphs when determining the title unless the user explicitly asks for that behavior.
 - Preserve its original text and paragraph position.
 - Set all runs in the title paragraph to bold.
+- Set the title font size to `小三号` (`15pt`).
 - Center the title paragraph.
 
 ### Paragraph Spacing
@@ -112,9 +113,9 @@ CHINESE_HEADING_RE = re.compile(r'^[一二三四五六七八九十百千万]+、
 NUMERIC_HEADING_RE = re.compile(r'^\d+(\.\d+)+(\s|\u3000|$)')
 
 
-def set_run_font(run):
+def set_run_font(run, size_pt=12):
     run.font.name = 'DengXian'
-    run.font.size = Pt(12)
+    run.font.size = Pt(size_pt)
     run._element.rPr.rFonts.set(qn('w:eastAsia'), 'SimSun')
 
 
@@ -132,12 +133,12 @@ def set_default_font(doc):
     rFonts.set(qn('w:eastAsia'), 'SimSun')
 
 
-def set_paragraph_bold(paragraph):
+def set_paragraph_bold(paragraph, size_pt=12):
     if not paragraph.runs:
         paragraph.add_run(paragraph.text)
     for run in paragraph.runs:
         run.bold = True
-        set_run_font(run)
+        set_run_font(run, size_pt)
 
 
 def set_paragraph_spacing(paragraph):
@@ -198,7 +199,7 @@ def format_document(input_path, output_path=None):
         title_paragraph = doc.paragraphs[0] if doc.paragraphs else None
 
         if title_paragraph is not None:
-            set_paragraph_bold(title_paragraph)
+            set_paragraph_bold(title_paragraph, 15)
             title_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
         for paragraph in doc.paragraphs:
@@ -211,7 +212,7 @@ def format_document(input_path, output_path=None):
                 set_run_font(run)
 
             if paragraph is title_paragraph:
-                set_paragraph_bold(paragraph)
+                set_paragraph_bold(paragraph, 15)
                 paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
             elif is_chinese_heading(stripped) or is_numeric_heading(stripped):
                 set_paragraph_bold(paragraph)

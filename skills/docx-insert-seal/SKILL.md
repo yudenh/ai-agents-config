@@ -9,7 +9,7 @@ Insert a company seal (公章) image into a DOCX document at locations where a s
 
 ## Use When
 
-The user wants to stamp a company seal image onto a DOCX document at supplier seal placeholder locations. Matches any paragraph containing both `供` and `盖章`, covering patterns like `供应商盖章`, `供方盖章`, `供货方盖章处`, etc.
+The user wants to stamp a company seal image onto a DOCX document at supplier seal placeholder locations. Matches any paragraph containing both `供` and `盖章`, covering patterns like `供应商盖章`, `供方盖章`, `供货方盖章处`, etc. Ignore legal-representative placeholders such as `法定代表人（盖章）` / `法定代表人盖章`; do not insert the company seal there.
 
 ## Requirements
 
@@ -20,7 +20,7 @@ The user wants to stamp a company seal image onto a DOCX document at supplier se
 ## Steps
 
 1. Accept the DOCX file path and seal image path as arguments.
-2. Use `officecli query` to find all paragraphs containing supplier seal keywords.
+2. Use `officecli query` to find all paragraphs containing supplier seal keywords, excluding legal-representative placeholders.
 3. If no matching paragraph is found, report and exit without modification.
 4. Use `officecli get /section[1]` to retrieve page dimensions.
 5. Compute image dimensions via PIL (width 4cm, height proportional).
@@ -43,10 +43,12 @@ import sys
 import os
 import json
 import subprocess
+import re
 from PIL import Image
 
-# Search paragraphs containing both '供' and '盖章'
+# Search paragraphs containing both '供' and '盖章', excluding legal-representative placeholders
 SEAL_WORDS = ['\u76d6\u7ae0']  # 盖章
+LEGAL_REP_SEAL_RE = re.compile(r'\u6cd5\u5b9a\u4ee3\u8868\u4eba[\s\S]{0,12}\u76d6\u7ae0')  # 法定代表人...盖章
 
 
 def officecli(args):
@@ -84,6 +86,10 @@ def close_file(path):
     officecli(['close', path])
 
 
+def is_legal_rep_seal_placeholder(text):
+    return bool(LEGAL_REP_SEAL_RE.search(text))
+
+
 def main():
     if len(sys.argv) < 3:
         print('Usage: python docx_insert_seal.py <input.docx> <seal_image>')
@@ -109,7 +115,7 @@ def main():
     print(f'Image: {img_w}cm x {img_h}cm')
 
     try:
-        # Find paragraphs with both '供' and '盖章'
+        # Find paragraphs with both '供' and '盖章', but not legal-representative placeholders
         raw_matches = {}
         for word in SEAL_WORDS:
             result = officecli([
@@ -121,7 +127,8 @@ def main():
 
         all_matches = [
             p for p in raw_matches.values()
-            if '\u4f9b' in p.get('text', '') or '\u4f9b' in p.get('preview', '')
+            if '\u4f9b' in f"{p.get('text', '')} {p.get('preview', '')}"
+            and not is_legal_rep_seal_placeholder(f"{p.get('text', '')} {p.get('preview', '')}")
         ]
 
         if not all_matches:

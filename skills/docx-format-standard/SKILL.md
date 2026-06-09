@@ -18,25 +18,42 @@ The user wants to standardize a DOCX方案文档, 技术方案, 项目方案, or
 
 ## Steps
 
-1. Accept the input DOCX path and optional output DOCX path.
+1. Accept the input DOCX path and optional output DOCX path. By default, edit and save over the original document; only save a separate copy when the user explicitly asks for it.
 2. Open the DOCX with `python-docx`.
 3. Set the document default font:
    - Latin/default font: `等线` (`DengXian`)
    - East Asian/Chinese font: `宋体` (`SimSun`)
-4. Treat the first non-empty paragraph as the document title and set it bold.
-5. Bold Chinese numbered headings like `一、...`, `二、...`, `三、...`.
-6. Bold numeric hierarchy headings like `1.1`, `1.2`, `2.1`, `2.1.1`, `3.2.1`.
-7. For non-heading paragraphs, set first-line indent to 2 Chinese characters.
-8. Add centered Arabic page numbers to every section footer.
-9. Save the output document and close/release all document handles.
+   - Default font size: `小四` (`12pt`)
+4. Set every paragraph to 0 lines before, 0 lines after, and 1.15 line spacing.
+5. Treat the document's first line/first paragraph as the title, set it bold, and center it. This rule is mandatory: use the actual first paragraph (`doc.paragraphs[0]`) and do not skip blank paragraphs when locating the title.
+6. Bold Chinese numbered headings like `一、...`, `二、...`, `三、...`.
+7. Bold numeric hierarchy headings like `1.1`, `1.2`, `2.1`, `2.1.1`, `3.2.1`.
+8. For non-heading paragraphs, set first-line indent to 2 Chinese characters.
+9. Add centered Arabic page numbers to every section footer.
+10. Save the output document and close/release all document handles.
 
 ## Formatting Rules
 
+### Font
+
+- Default Latin/default font: `等线` (`DengXian`).
+- Default East Asian/Chinese font: `宋体` (`SimSun`).
+- Default font size: `小四` (`12pt`).
+
 ### Title
 
-- Use the first non-empty paragraph in the document.
+- Use the document's first line/first paragraph (`doc.paragraphs[0]`) as the title.
+- Do not skip blank paragraphs when determining the title unless the user explicitly asks for that behavior.
 - Preserve its original text and paragraph position.
 - Set all runs in the title paragraph to bold.
+- Center the title paragraph.
+
+### Paragraph Spacing
+
+- Apply to every paragraph.
+- Set spacing before to `0` lines.
+- Set spacing after to `0` lines.
+- Set line spacing to `1.15`.
 
 ### Chinese Numbered Headings
 
@@ -85,10 +102,10 @@ import re
 import sys
 
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
-from docx.shared import Cm
+from docx.shared import Cm, Pt
 
 
 CHINESE_HEADING_RE = re.compile(r'^[一二三四五六七八九十百千万]+、')
@@ -97,12 +114,14 @@ NUMERIC_HEADING_RE = re.compile(r'^\d+(\.\d+)+(\s|\u3000|$)')
 
 def set_run_font(run):
     run.font.name = 'DengXian'
+    run.font.size = Pt(12)
     run._element.rPr.rFonts.set(qn('w:eastAsia'), 'SimSun')
 
 
 def set_default_font(doc):
     style = doc.styles['Normal']
     style.font.name = 'DengXian'
+    style.font.size = Pt(12)
     rPr = style.element.get_or_add_rPr()
     rFonts = rPr.rFonts
     if rFonts is None:
@@ -119,6 +138,14 @@ def set_paragraph_bold(paragraph):
     for run in paragraph.runs:
         run.bold = True
         set_run_font(run)
+
+
+def set_paragraph_spacing(paragraph):
+    paragraph_format = paragraph.paragraph_format
+    paragraph_format.space_before = Pt(0)
+    paragraph_format.space_after = Pt(0)
+    paragraph_format.line_spacing = 1.15
+    paragraph_format.line_spacing_rule = WD_LINE_SPACING.MULTIPLE
 
 
 def is_chinese_heading(text):
@@ -158,27 +185,24 @@ def add_footer_page_numbers(doc):
         add_page_number(paragraph)
 
 
-def first_non_empty_paragraph(doc):
-    for paragraph in doc.paragraphs:
-        if paragraph.text.strip():
-            return paragraph
-    return None
-
-
 def format_document(input_path, output_path=None):
     input_path = os.path.abspath(input_path)
     if output_path is None:
-        base, ext = os.path.splitext(input_path)
-        output_path = f'{base}_formatted{ext}'
+        output_path = input_path
     output_path = os.path.abspath(output_path)
 
     doc = Document(input_path)
 
     try:
         set_default_font(doc)
-        title_paragraph = first_non_empty_paragraph(doc)
+        title_paragraph = doc.paragraphs[0] if doc.paragraphs else None
+
+        if title_paragraph is not None:
+            set_paragraph_bold(title_paragraph)
+            title_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
         for paragraph in doc.paragraphs:
+            set_paragraph_spacing(paragraph)
             stripped = paragraph.text.strip()
             if not stripped:
                 continue
@@ -188,6 +212,7 @@ def format_document(input_path, output_path=None):
 
             if paragraph is title_paragraph:
                 set_paragraph_bold(paragraph)
+                paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
             elif is_chinese_heading(stripped) or is_numeric_heading(stripped):
                 set_paragraph_bold(paragraph)
             else:
@@ -218,7 +243,7 @@ python docx_format_standard.py proposal.docx proposal_formatted.docx
 
 ## Notes
 
-- The default output path is `<input>_formatted.docx`; do not overwrite the original unless the user explicitly asks for in-place modification.
+- By default, the script edits and saves over the original DOCX. Save to a separate output path only when the user explicitly asks for a separate copy.
 - `python-docx` does not launch Microsoft Word and normally does not leave a Word application lock.
 - If using `officecli`, COM automation, LibreOffice, or Word automation instead, always save and close the document after processing. This is mandatory: failing to close the document can leave the DOCX locked and prevent later edits.
 - After processing, verify that no Office/automation process is holding the document lock before reporting completion.

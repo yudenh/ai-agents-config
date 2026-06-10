@@ -25,8 +25,8 @@ The user wants to standardize a DOCX方案文档, 技术方案, 项目方案, or
    - East Asian/Chinese font: `宋体` (`SimSun`)
    - Default font size: `小四` (`12pt`)
 4. Set every paragraph to 0 lines before, 0 lines after, and 1.15 line spacing.
-5. Treat the document's first line/first paragraph as the title, set it bold, center it, and set its font size to `小三号` (`15pt`). This rule is mandatory: use the actual first paragraph (`doc.paragraphs[0]`) and do not skip blank paragraphs when locating the title.
-6. Bold Chinese numbered headings like `一、...`, `二、...`, `三、...`, and set both spacing before and after to `0.5` line.
+5. Treat the document's first line/first paragraph as the title, set it bold, center it, and set its font size to `三号` (`16pt`). This rule is mandatory: use the actual first paragraph (`doc.paragraphs[0]`) and do not skip blank paragraphs when locating the title.
+6. Bold Chinese numbered headings like `一、...`, `二、...`, `三、...`, set their font size to `四号` (`14pt`), and set both spacing before and after to `0.5` line.
 7. Bold numeric hierarchy headings like `1.1`, `1.2`, `2.1`, `2.1.1`, `3.2.1`.
 8. For non-heading paragraphs, set first-line indent to 2 Chinese characters.
 9. Add centered Arabic page numbers to every section footer.
@@ -46,7 +46,7 @@ The user wants to standardize a DOCX方案文档, 技术方案, 项目方案, or
 - Do not skip blank paragraphs when determining the title unless the user explicitly asks for that behavior.
 - Preserve its original text and paragraph position.
 - Set all runs in the title paragraph to bold.
-- Set the title font size to `小三号` (`15pt`).
+- Set the title font size to `三号` (`16pt`).
 - Center the title paragraph.
 
 ### Paragraph Spacing
@@ -58,7 +58,7 @@ The user wants to standardize a DOCX方案文档, 技术方案, 项目方案, or
 
 ### Chinese Numbered Headings
 
-Bold paragraphs whose stripped text starts with a Chinese numeral followed by `、`, and set both spacing before and after to `0.5` line.
+Bold paragraphs whose stripped text starts with a Chinese numeral followed by `、`, set their font size to `四号` (`14pt`), and set both spacing before and after to `0.5` line.
 
 Regex: `^[一二三四五六七八九十百千万]+、`
 
@@ -205,7 +205,7 @@ def format_document(input_path, output_path=None):
         title_paragraph = doc.paragraphs[0] if doc.paragraphs else None
 
         if title_paragraph is not None:
-            set_paragraph_bold(title_paragraph, 15)
+            set_paragraph_bold(title_paragraph, 16)
             title_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
         for paragraph in doc.paragraphs:
@@ -218,10 +218,10 @@ def format_document(input_path, output_path=None):
                 set_run_font(run)
 
             if paragraph is title_paragraph:
-                set_paragraph_bold(paragraph, 15)
+                set_paragraph_bold(paragraph, 16)
                 paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
             elif is_chinese_heading(stripped):
-                set_paragraph_bold(paragraph)
+                set_paragraph_bold(paragraph, 14)
                 set_chinese_heading_spacing(paragraph)
             elif is_numeric_heading(stripped):
                 set_paragraph_bold(paragraph)

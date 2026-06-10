@@ -202,13 +202,14 @@ def format_document(input_path, output_path=None):
 
     try:
         set_default_font(doc)
-        title_paragraph = doc.paragraphs[0] if doc.paragraphs else None
+        paragraphs = doc.paragraphs
+        title_index = 0 if paragraphs else None
 
-        if title_paragraph is not None:
-            set_paragraph_bold(title_paragraph, 16)
-            title_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        if title_index is not None:
+            set_paragraph_bold(paragraphs[title_index], 16)
+            paragraphs[title_index].alignment = WD_ALIGN_PARAGRAPH.CENTER
 
-        for paragraph in doc.paragraphs:
+        for index, paragraph in enumerate(paragraphs):
             set_paragraph_spacing(paragraph)
             stripped = paragraph.text.strip()
             if not stripped:
@@ -217,7 +218,7 @@ def format_document(input_path, output_path=None):
             for run in paragraph.runs:
                 set_run_font(run)
 
-            if paragraph is title_paragraph:
+            if index == title_index:
                 set_paragraph_bold(paragraph, 16)
                 paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
             elif is_chinese_heading(stripped):

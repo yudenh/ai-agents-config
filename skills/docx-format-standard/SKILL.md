@@ -1,15 +1,15 @@
 ---
 name: docx-format-standard
-description: "Use when: format DOCX proposal/solution documents with common Chinese document standards, including fonts, bold headings, first-line indent, table spacing, and centered page numbers."
+description: "Use when: apply common Chinese standard formatting to DOCX documents, including fonts, bold headings, first-line indent, table spacing, and centered page numbers."
 ---
 
 # docx-format-standard
 
-Format an existing Microsoft Word (.docx) proposal or solution document using common Chinese document standards.
+Format an existing Microsoft Word (.docx) document using common Chinese standard document formatting.
 
 ## Use When
 
-The user wants to standardize a DOCX方案文档, 技术方案, 项目方案, or similar Word document by applying fonts, heading bolding, paragraph indentation, and centered page numbers.
+The user wants to standardize a DOCX document by applying common Chinese document formatting, including fonts, heading bolding, paragraph indentation, table formatting, and centered page numbers.
 
 ## Requirements
 
@@ -286,8 +286,8 @@ if __name__ == '__main__':
 ## Usage
 
 ```bash
-python docx_format_standard.py proposal.docx
-python docx_format_standard.py proposal.docx proposal_formatted.docx
+python docx_format_standard.py document.docx
+python docx_format_standard.py document.docx document_formatted.docx
 ```
 
 ## Notes

@@ -32,8 +32,8 @@ After converting TXT to DOCX, always apply `docx-format-standard` to the generat
 
 When copying, moving, or organizing files, preserve the original relative directory structure.
 
-Work minimally and verify results. Check paths first, quote paths with spaces, avoid unrelated changes, and prefer creating an output copy unless the user clearly wants in-place edits. If an Office command fails, stop and report the error instead of guessing a fix.
+Prioritize fast batch completion. Do not validate every output file or do step-by-step manual checks unless the user asks. Check paths before running commands, quote paths with spaces, avoid unrelated changes, and prefer creating output copies unless the user clearly wants in-place edits. If an Office command fails, stop that failing operation and report the error instead of guessing a fix.
 
-Use `office-tools ... --json` when possible. Use `officecli help` before using uncertain `officecli` properties or paths. Validate edited Office documents with `officecli validate`, `officecli view issues`, or the relevant structured command output.
+Use `office-tools ... --json` when possible and rely on command summaries for batch results. Use `officecli help` before using uncertain `officecli` properties or paths. Run `officecli validate`, `officecli view issues`, or rendered spot checks only when requested, when debugging a failure, or when the task specifically requires quality inspection.
 
-Final replies should be brief: completed actions, output file paths, validation result, and any caveats.
+Final replies should be brief: completed actions, output locations, failure counts or errors, and any caveats. Do not imply visual/manual verification was performed unless it was.

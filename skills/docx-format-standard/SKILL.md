@@ -1,6 +1,6 @@
 ---
 name: docx-format-standard
-description: "Use when: format DOCX proposal/solution documents with common Chinese document standards, including fonts, bold headings, first-line indent, and centered page numbers."
+description: "Use when: format DOCX proposal/solution documents with common Chinese document standards, including fonts, bold headings, first-line indent, table spacing, and centered page numbers."
 ---
 
 # docx-format-standard
@@ -25,12 +25,13 @@ The user wants to standardize a DOCX方案文档, 技术方案, 项目方案, or
    - East Asian/Chinese font: `宋体` (`SimSun`)
    - Default font size: `小四` (`12pt`)
 4. Set every paragraph to 0 lines before, 0 lines after, and 1.15 line spacing.
-5. Treat the document's first line/first paragraph as the title, set it bold, center it, and set its font size to `三号` (`16pt`). This rule is mandatory: use the actual first paragraph (`doc.paragraphs[0]`) and do not skip blank paragraphs when locating the title.
+5. Treat the document's first non-empty paragraph as the title, set it bold, center it, and set its font size to `三号` (`16pt`). Skip leading blank paragraphs when locating the title.
 6. Bold Chinese numbered headings like `一、...`, `二、...`, `三、...`, set their font size to `四号` (`14pt`), and set both spacing before and after to `0.5` line.
 7. Bold numeric hierarchy headings like `1.1`, `1.2`, `2.1`, `2.1.1`, `3.2.1`.
 8. For non-heading paragraphs, set first-line indent to 2 Chinese characters.
-9. Add centered Arabic page numbers to every section footer.
-10. Save the output document and close/release all document handles.
+9. For all table cells, set paragraph spacing before/after to `0` lines, line spacing to single, and vertical alignment to center.
+10. Add centered Arabic page numbers to every section footer.
+11. Save the output document and close/release all document handles.
 
 ## Formatting Rules
 
@@ -42,8 +43,8 @@ The user wants to standardize a DOCX方案文档, 技术方案, 项目方案, or
 
 ### Title
 
-- Use the document's first line/first paragraph (`doc.paragraphs[0]`) as the title.
-- Do not skip blank paragraphs when determining the title unless the user explicitly asks for that behavior.
+- Use the document's first non-empty paragraph as the title.
+- Skip leading blank paragraphs when determining the title.
 - Preserve its original text and paragraph position.
 - Set all runs in the title paragraph to bold.
 - Set the title font size to `三号` (`16pt`).
@@ -87,6 +88,16 @@ Examples:
 - Set first-line indent to 2 Chinese characters, approximately `0.74cm`.
 - Do not force bold off; preserve existing emphasis unless the task explicitly asks to remove it.
 
+### Tables
+
+- Apply to every table cell in every table.
+- Set each cell paragraph's spacing before to `0` lines.
+- Set each cell paragraph's spacing after to `0` lines.
+- Set each cell paragraph's line spacing to single.
+- Set each table cell's vertical alignment to center.
+- Set each table row's minimum height to `1cm`.
+- Enable table column autofit.
+
 ### Page Number Footer
 
 - Add Arabic page numbers using Word `PAGE` field.
@@ -103,6 +114,7 @@ import re
 import sys
 
 from docx import Document
+from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT, WD_ROW_HEIGHT_RULE
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
@@ -155,6 +167,30 @@ def set_chinese_heading_spacing(paragraph):
     paragraph_format.space_after = Pt(6)
 
 
+def get_title_index(paragraphs):
+    return next((index for index, paragraph in enumerate(paragraphs) if paragraph.text.strip()), None)
+
+
+def set_table_paragraph_spacing(paragraph):
+    paragraph_format = paragraph.paragraph_format
+    paragraph_format.space_before = Pt(0)
+    paragraph_format.space_after = Pt(0)
+    paragraph_format.line_spacing = 1
+    paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE
+
+
+def format_tables(doc):
+    for table in doc.tables:
+        table.autofit = True
+        for row in table.rows:
+            row.height = Cm(1)
+            row.height_rule = WD_ROW_HEIGHT_RULE.AT_LEAST
+            for cell in row.cells:
+                cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+                for paragraph in cell.paragraphs:
+                    set_table_paragraph_spacing(paragraph)
+
+
 def is_chinese_heading(text):
     return bool(CHINESE_HEADING_RE.match(text.strip()))
 
@@ -203,11 +239,7 @@ def format_document(input_path, output_path=None):
     try:
         set_default_font(doc)
         paragraphs = doc.paragraphs
-        title_index = 0 if paragraphs else None
-
-        if title_index is not None:
-            set_paragraph_bold(paragraphs[title_index], 16)
-            paragraphs[title_index].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        title_index = get_title_index(paragraphs)
 
         for index, paragraph in enumerate(paragraphs):
             set_paragraph_spacing(paragraph)
@@ -219,8 +251,7 @@ def format_document(input_path, output_path=None):
                 set_run_font(run)
 
             if index == title_index:
-                set_paragraph_bold(paragraph, 16)
-                paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                continue
             elif is_chinese_heading(stripped):
                 set_paragraph_bold(paragraph, 14)
                 set_chinese_heading_spacing(paragraph)
@@ -229,6 +260,13 @@ def format_document(input_path, output_path=None):
             else:
                 paragraph.paragraph_format.first_line_indent = Cm(0.74)
 
+        if title_index is not None:
+            title_paragraph = paragraphs[title_index]
+            title_paragraph.paragraph_format.first_line_indent = Cm(0)
+            set_paragraph_bold(title_paragraph, 16)
+            title_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+        format_tables(doc)
         add_footer_page_numbers(doc)
         doc.save(output_path)
         print(f'Formatted: {output_path}')

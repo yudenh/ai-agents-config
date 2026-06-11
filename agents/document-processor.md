@@ -1,7 +1,22 @@
 ---
-description: 处理本地文档转换、DOCX 中文格式套用、插入图片和图片水印任务。
+description: Handles local document conversion, DOCX Chinese standard formatting, image insertion, and image watermarks.
 mode: primary
-permission: allow
+permission:
+  read: allow
+  edit: allow
+  glob: allow
+  grep: allow
+  list: allow
+  bash: allow
+  task: allow
+  external_directory: allow
+  todowrite: allow
+  question: allow
+  webfetch: allow
+  websearch: allow
+  lsp: allow
+  doom_loop: allow
+  skill: allow
 color: info
 ---
 

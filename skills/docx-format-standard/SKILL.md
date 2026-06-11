@@ -96,7 +96,7 @@ Examples:
 - Set each cell paragraph's line spacing to single.
 - Set each table cell's vertical alignment to center.
 - Set each table row's minimum height to `1cm`.
-- Enable table column autofit.
+- Clear fixed table and cell widths, then enable Word table autofit.
 
 ### Page Number Footer
 
@@ -179,13 +179,44 @@ def set_table_paragraph_spacing(paragraph):
     paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE
 
 
+def set_table_autofit(table):
+    table.autofit = True
+    tbl = table._tbl
+    tbl_pr = tbl.tblPr
+
+    tbl_layout = tbl_pr.find(qn('w:tblLayout'))
+    if tbl_layout is None:
+        tbl_layout = OxmlElement('w:tblLayout')
+        tbl_pr.append(tbl_layout)
+    tbl_layout.set(qn('w:type'), 'autofit')
+
+    tbl_w = tbl_pr.find(qn('w:tblW'))
+    if tbl_w is None:
+        tbl_w = OxmlElement('w:tblW')
+        tbl_pr.append(tbl_w)
+    tbl_w.set(qn('w:type'), 'auto')
+    tbl_w.set(qn('w:w'), '0')
+
+    tbl_grid = tbl.find(qn('w:tblGrid'))
+    if tbl_grid is not None:
+        tbl.remove(tbl_grid)
+
+
+def clear_cell_width(cell):
+    tc_pr = cell._tc.get_or_add_tcPr()
+    tc_w = tc_pr.find(qn('w:tcW'))
+    if tc_w is not None:
+        tc_pr.remove(tc_w)
+
+
 def format_tables(doc):
     for table in doc.tables:
-        table.autofit = True
+        set_table_autofit(table)
         for row in table.rows:
             row.height = Cm(1)
             row.height_rule = WD_ROW_HEIGHT_RULE.AT_LEAST
             for cell in row.cells:
+                clear_cell_width(cell)
                 cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
                 for paragraph in cell.paragraphs:
                     set_table_paragraph_spacing(paragraph)
@@ -294,5 +325,6 @@ python docx_format_standard.py document.docx document_formatted.docx
 
 - By default, the script edits and saves over the original DOCX. Save to a separate output path only when the user explicitly asks for a separate copy.
 - `python-docx` does not launch Microsoft Word and normally does not leave a Word application lock.
+- Table autofit clears fixed widths and lets Word/WPS recalculate column widths when the DOCX is opened.
 - If using `officecli`, COM automation, LibreOffice, or Word automation instead, always save and close the document after processing. This is mandatory: failing to close the document can leave the DOCX locked and prevent later edits.
 - After processing, verify that no Office/automation process is holding the document lock before reporting completion.

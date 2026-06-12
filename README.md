@@ -1,11 +1,12 @@
 # AI Agents 配置
 
-这个仓库用于存放通用 AI Agent 行为准则、可复用 Skills，以及 OpenCode Agents 配置。
+这个仓库用于存放通用 AI Agent 行为准则、可复用 Skills，以及 OpenCode/Kilo Agents 配置。
 
 ## 内容
 
 - `AGENTS.md`：面向所有 AI Agent 的通用行为准则，强调先理解再编码、简单优先、外科手术式修改和目标驱动执行。
-- `agents/`：OpenCode Markdown Agent 配置。
+- `agents/`：OpenCode/Kilo Markdown Agent 配置源文件。
+- `.kilo/agent/`：Kilo 可直接加载的 Agent 配置。
 - `skills/`：面向所有 AI Agent 的可复用 Skills 配置。
 - `skills/config-folder-path-color/`：生成当前工作区的 VS Code `folder-path-color` 配置。
 - `skills/config-android-repo-mirror/`：为 Android/Gradle 项目配置阿里云 Maven 镜像，替换 `google()` 和 `mavenCentral()` 仓库。
@@ -21,10 +22,11 @@
 
 将本仓库中的配置文件同步到对应工具使用的配置目录中。
 
-Agents 放在 OpenCode 全局配置目录：
+Agents 可放在 OpenCode 或 Kilo 全局配置目录：
 
 ```text
 ~/.config/opencode/agents
+~/.config/kilo/agents
 ```
 
 Skills 放在通用 AI Agent skills 目录：

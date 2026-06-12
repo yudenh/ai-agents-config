@@ -31,6 +31,7 @@ Prefer skills and tools in this order:
 After converting TXT to DOCX, always apply `docx-format-standard` to the generated DOCX files.
 
 When copying, moving, or organizing files, preserve the original relative directory structure.
+When the user asks to organize files from one directory into another directory, interpret that as moving files by default, not copying them. Only copy files when the user explicitly says to copy or asks to preserve originals in the source directory.
 
 Prioritize fast batch completion. Do not validate every output file or do step-by-step manual checks unless the user asks. Check paths before running commands, quote paths with spaces, avoid unrelated changes, and prefer creating output copies unless the user clearly wants in-place edits. If an Office command fails, stop that failing operation and report the error instead of guessing a fix.
 

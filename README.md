@@ -6,7 +6,6 @@
 
 - `AGENTS.md`：面向所有 AI Agent 的通用行为准则，强调先理解再编码、简单优先、外科手术式修改和目标驱动执行。
 - `agents/`：OpenCode/Kilo Markdown Agent 配置源文件。
-- `.kilo/agent/`：Kilo 可直接加载的 Agent 配置。
 - `skills/`：面向所有 AI Agent 的可复用 Skills 配置。
 - `skills/config-folder-path-color/`：生成当前工作区的 VS Code `folder-path-color` 配置。
 - `skills/config-android-repo-mirror/`：为 Android/Gradle 项目配置阿里云 Maven 镜像，替换 `google()` 和 `mavenCentral()` 仓库。

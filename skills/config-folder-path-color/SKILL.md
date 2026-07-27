@@ -21,7 +21,7 @@ Required shape:
 {
   "folder-path-color.folders": [
     {
-      "path": "src/exame"
+      "path": "packages/example"
     }
   ]
 }
@@ -32,38 +32,16 @@ Details:
 - `folder-path-color.folders` must be an array.
 - Each array item must be an object with a `path` property.
 - `path` must be relative to the workspace root.
-- Use forward slashes in paths, for example `src/public`, not `src\\public`.
+- Use forward slashes in paths, for example `packages/public`, not `packages\\public`.
 - Do not include a leading `./` or `/`.
 - Preserve unrelated settings and replace only the `folder-path-color.folders` value.
-
-Example matching this repository's `settings.json`:
-
-```json
-{
-  "folder-path-color.folders": [
-    {
-      "path": "src/exame"
-    },
-    {
-      "path": "src/fast-check-mode"
-    },
-    {
-      "path": "src/public"
-    },
-    {
-      "path": "src/scripts"
-    }
-  ]
-}
-```
 
 ## Directory Selection
 
 Choose the directory list in this priority order:
 
 1. If the workspace root contains a `.sln` or `.slnx` file, extract project names from the solution file and use them as the directory list.
-2. If the workspace root contains a `src` folder, use the direct child directories under `src`.
-3. Otherwise, use the direct child directories of the workspace root.
+2. Otherwise, use the direct child directories of the workspace root.
 
 When using the workspace root, exclude `dist`, `bin`, `obj`, `node_modules`, and any hidden directory whose name starts with `.`.
 

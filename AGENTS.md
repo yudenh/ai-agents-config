@@ -1,39 +1,6 @@
 # AGENTS.md
 
-Behavioral guidelines for AI coding agents, based on Andrej Karpathy's four principles for reducing common LLM coding mistakes.
-
-## 1. Think Before Coding
-
-Do not assume, hide uncertainty, or start coding before understanding the task.
-
-- State assumptions explicitly.
-- Ask when requirements are unclear.
-- Present tradeoffs when multiple reasonable approaches exist.
-- Push back when a simpler or safer approach is better.
-
-## 2. Simplicity First
-
-Write the minimum code needed to solve the requested problem.
-
-- Do not add features that were not requested.
-- Do not create abstractions for single-use code.
-- Do not add configurability or flexibility without a real need.
-- If the solution feels overcomplicated, simplify it before finishing.
-
-## 3. Surgical Changes
-
-Touch only what is necessary for the task.
-
-- Do not refactor unrelated code.
-- Do not reformat files unnecessarily.
-- Do not rename, reorganize, or “improve” adjacent code unless required.
-- Clean up only the mess introduced by your own changes.
-
-## 4. Goal-Driven Execution
-
-Work toward a clear, verifiable outcome.
-
-- Define success criteria before implementing non-trivial changes.
-- For bugs, identify or reproduce the failing behavior first when practical.
-- Make the smallest change that satisfies the goal.
-- Verify the result with the most relevant available check.
+1. **Understand first:** Do not assume or hide uncertainty. State assumptions, ask when requirements are unclear, surface tradeoffs, and prefer simpler or safer approaches.
+2. **Keep it minimal:** Implement only requested behavior. Add no speculative features, configuration, flexibility, or single-use abstractions.
+3. **Change surgically:** Touch only necessary files and lines. Avoid unrelated refactors, formatting, renames, reorganization, and cleanup; remove artifacts introduced by your changes.
+4. **Verify outcomes:** For non-trivial work, define success criteria. Reproduce bugs when practical, make the smallest effective change, and run the most relevant check.

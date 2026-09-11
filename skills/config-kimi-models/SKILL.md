@@ -16,7 +16,7 @@ Use the path supplied by the user. If the user does not provide one, default to 
 
 | Provider   | Keep condition                                              |
 | ---------- | ----------------------------------------------------------- |
-| `openai`   | Model name is one of: `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`, `gpt-5.5`, `gpt-5.4`, `gpt-5.4-mini` |
+| `openai`   | Model name is one of: `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.5`, `gpt-5.4`, `gpt-5.4-mini` |
 | `opencode` | Model name is `big-pickle` or contains `free`               |
 
 All other model entries are removed. Non-model sections (`[providers.*]`, `[thinking]`, etc.) are always preserved.

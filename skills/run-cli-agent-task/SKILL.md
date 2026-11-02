@@ -1,15 +1,15 @@
 ---
 name: run-cli-agent-task
-description: "Use when: 用户要求用 opencode 或 qoder 执行特定任务，或提到 用 opencode 跑/opencode run、qoder/qoderclicn。"
+description: "Use when: 用户要求用 opencode、qoder 或 codebuddy 执行特定任务，或提到 用 opencode 跑/opencode run、qoder/qoderclicn、codebuddy。"
 ---
 
 # run-cli-agent-task
 
-用户要求用 opencode 或 qoder 执行特定任务时，把对应 CLI 当作子智能体：将用户描述的任务转发给它全权执行，并等待其返回结果。
+用户要求用 opencode、qoder 或 codebuddy 执行特定任务时，把对应 CLI 当作子智能体：将用户描述的任务转发给它全权执行，并等待其返回结果。
 
 ## Use When
 
-用户要求用 opencode 或 qoder（QoderCN）去做某个任务，例如「用 opencode 执行 xxx」「让 opencode 跑一下这个任务」「用 qoder 执行 xxx」。仅提到工具名而不要求执行任务时，不要触发。
+用户要求用 opencode、qoder 或 codebuddy 去做某个任务，例如「用 opencode 执行 xxx」「让 opencode 跑一下这个任务」「用 qoder 执行 xxx」「用 codebuddy 执行 xxx」。仅提到工具名而不要求执行任务时，不要触发。
 
 ## 命令对应关系
 
@@ -17,8 +17,9 @@ description: "Use when: 用户要求用 opencode 或 qoder 执行特定任务，
 | --- | --- |
 | opencode | `opencode run "<任务描述>"` |
 | qoder（正名 QoderCN） | `qoderclicn --print "<任务描述>"` |
+| codebuddy | `codebuddy --print "<任务描述>"` |
 
-两者均为非交互模式：接收任务描述，执行完输出结果并退出。假定对应 CLI 已在 PATH 中，直接调用，不做安装路径探测。
+三者均为非交互模式：接收任务描述，执行完输出结果并退出。假定对应 CLI 已在 PATH 中，直接调用，不做安装路径探测。
 
 ## Steps
 
@@ -28,6 +29,8 @@ description: "Use when: 用户要求用 opencode 或 qoder 执行特定任务，
    opencode run "<任务描述>"
    # 或
    qoderclicn --print "<任务描述>"
+   # 或
+   codebuddy --print "<任务描述>"
    ```
 
    即调用时的 shell 当前目录就是本会话工作目录，不要 `cd` 到别处。`<任务描述>` 就是用户描述任务的原文。

@@ -7,7 +7,7 @@
 - `AGENTS.md`：面向所有 AI Agent 的通用行为准则，强调先理解再编码、简单优先、外科手术式修改和目标驱动执行。
 - `skills/`：面向所有 AI Agent 的可复用 Skills 配置。
 - `skills/config-folder-path-color/`：生成当前工作区的 VS Code `folder-path-color` 配置。
-- `skills/config-android-repo-mirror/`：为 Android/Gradle 项目配置阿里云 Maven 镜像，替换 `google()` 和 `mavenCentral()` 仓库。
+- `skills/config-android-repo-mirror/`：为 Android/Gradle 项目配置阿里云 Maven 镜像，将 `google()`、`mavenCentral()`、`jcenter()` 仓库替换为镜像地址（附带 `mirror_gradle_repos.py` 脚本）。
 - `skills/config-dsh-reasoning-efforts/`：为 dsh `cordis.patch.yml` 中的大模型补全缺失的 `input` 和 `reasoningEfforts`。
 
 ## 文件放置

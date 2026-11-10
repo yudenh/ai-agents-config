@@ -8,37 +8,16 @@
 - `skills/`：面向所有 AI Agent 的可复用 Skills 配置。
 - `skills/config-folder-path-color/`：生成当前工作区的 VS Code `folder-path-color` 配置。
 - `skills/config-android-repo-mirror/`：为 Android/Gradle 项目配置阿里云 Maven 镜像，将 `google()`、`mavenCentral()`、`jcenter()` 仓库替换为镜像地址（附带 `mirror_gradle_repos.py` 脚本）。
-- `skills/config-dsh-reasoning-efforts/`：为 dsh `cordis.patch.yml` 中的大模型补全缺失的 `input` 和 `reasoningEfforts`。
+- `skills/install-cli-agents/`：安装终端 coding agent CLI（opencode、qoder、codebuddy、mcode）。
+- `skills/run-cli-agent-task/`：把 opencode、qoder、codebuddy、mcode 当作子智能体执行用户指定的任务。
 
 ## 文件放置
 
-将本仓库中的配置文件同步到对应工具使用的配置目录中。
-
-Skills 放在通用 AI Agent skills 目录：
+将本仓库中的配置文件同步到对应工具使用的配置目录中，统一放在通用 AI Agent 目录：
 
 ```text
+~/.agents/AGENTS.md
 ~/.agents/skills
 ```
 
-`AGENTS.md` 可按所用 AI Agent 的约定放置；OpenCode 全局配置目录为：
-
-```text
-~/.config/opencode/AGENTS.md
-```
-
-## 行为准则
-
-`AGENTS.md` 基于 Andrej Karpathy 提出的四条核心准则整理，定义了以下原则：
-
-1. 先思考再编码。
-2. 简单优先。
-3. 外科手术式修改。
-4. 目标驱动执行。
-
-这些原则用于减少 AI Agent 执行过程中的误判、过度设计和无关改动。
-
-## 维护建议
-
-- 技能说明应保持简洁、明确、可执行。
-- 新增技能时，应包含触发场景、执行步骤和注意事项。
-- 修改行为准则时，应优先保持稳定性和一致性。
+即 `AGENTS.md` 复制为 `~/.agents/AGENTS.md`，`skills/` 下的各 skill 目录复制到 `~/.agents/skills/` 下。

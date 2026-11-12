@@ -1,8 +1,8 @@
 ---
 name: install-cli-agents
 description: |
-  安装终端 coding agent CLI：opencode、qoder、codebuddy、mcode。当用户说"安装 opencode /
-  qoder / codebuddy / mcode"、"把这些 CLI 装上"、"升级 agent CLI"时使用。
+  安装终端 coding agent CLI：opencode、qoder、codebuddy、mcode、dsh。当用户说"安装 opencode /
+  qoder / codebuddy / mcode / dsh"、"把这些 CLI 装上"、"升级 agent CLI"时使用。
 ---
 
 # Install CLI Agents
@@ -19,6 +19,7 @@ description: |
    | qoder | `irm https://qoder.com.cn/install.ps1 \| iex` |
    | codebuddy | `npm install -g @tencent-ai/codebuddy-code` |
    | mcode | `npm install -g @minimax-ai/code` |
+   | dsh | `npm install -g @deepseek-ai/dsh` |
 
 2. 以命令退出码判断成败。不跑 `--version`、不查 PATH、不做其他校验。
 3. 汇报每个 agent 的安装结果。
@@ -39,6 +40,6 @@ description: |
 
 ## Windows (win32) platform notes
 
-- `irm ... | iex` 是 PowerShell 专有写法；三个 `npm install -g` 跨平台通用。
+- `irm ... | iex` 是 PowerShell 专有写法；四个 `npm install -g` 跨平台通用。
 - macOS/Linux 上 qoder 的安装方式未核实，先查官方文档，不要把 `.ps1` 的 URL 直接换成
   `curl ... | bash`。

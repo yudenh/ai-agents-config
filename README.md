@@ -8,8 +8,9 @@
 - `skills/`：面向所有 AI Agent 的可复用 Skills 配置。
 - `skills/config-folder-path-color/`：生成当前工作区的 VS Code `folder-path-color` 配置。
 - `skills/config-android-repo-mirror/`：为 Android/Gradle 项目配置阿里云 Maven 镜像，将 `google()`、`mavenCentral()`、`jcenter()` 仓库替换为镜像地址（附带 `mirror_gradle_repos.py` 脚本）。
-- `skills/install-cli-agents/`：安装终端 coding agent CLI（opencode、qoder、codebuddy、mcode）。
+- `skills/install-cli-agents/`：安装终端 coding agent CLI（opencode、qoder、codebuddy、mcode、dsh）。
 - `skills/run-cli-agent-task/`：把 opencode、qoder、codebuddy、mcode 当作子智能体执行用户指定的任务。
+- `skills/support-bilibili-video/`：为指定的 Bilibili 视频点赞并发送一条表情包评论（不 @ 任何人）。
 
 ## 文件放置
 
